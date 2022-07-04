@@ -7,10 +7,12 @@ Authors@R:
 Description: A pipeline to assess dependency between RNAs maturation events. It
     uses R package 'DESeq2' to accurately model transcriptomics data. It is a
     work in progress.
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 URL: https://github.com/SimiliSerpent/comaturationTracker
 BugReports: https://github.com/SimiliSerpent/comaturationTracker/issues
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
