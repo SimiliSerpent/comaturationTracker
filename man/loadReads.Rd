@@ -4,30 +4,58 @@
 \alias{loadReads}
 \title{Retrieve and format reads}
 \usage{
-loadReads(path, max_length)
+loadReads(
+  path_to_BAM,
+  path_to_maturation_sites,
+  max_length,
+  genome_range,
+  remove_duplicates = FALSE,
+  verbose = 0
+)
 }
 \arguments{
-\item{path}{\code{String} containing the path to the BAM files.}
+\item{path_to_BAM}{\code{String} containing the path to the BAM files folder. Put
+all the replicates in the same folder (along with the corresponding .bai
+files).}
+
+\item{path_to_maturation_sites}{\code{String} containing the path to the folder
+with all maturation sites files, \emph{e.g.} in gff file format.}
 
 \item{max_length}{\code{Integer} indicating the maximal authorized length for a
-read. Reads longer than this value will be removed. Default to \code{Inf}.}
+read. If specified, reads longer than this value will be removed.}
+
+\item{genome_range}{Optionnal \code{Numeric} vector of length 2. If specified,
+reads mapping outside this region will be removed.}
+
+\item{remove_duplicates}{\code{Logical} indicating whether or not reads mapping
+multiple locations will be removed. Default to \code{FALSE}.}
+
+\item{verbose}{\code{Integer} indicating the level of wordiness:
+\itemize{
+\item 0 = muted execution
+\item 1 = some information about the execution is displayed in the console
+}}
 }
 \value{
-A (list of) \code{GRanges} object with all the reads.
+A list of \code{GRanges} objects with all the reads for one condition
+with one given replicate in one object.
 }
 \description{
-\code{loadReads()} applies some formatting on BAM files before further dependency
-analysis - it offers to remove:
+\code{loadReads()} applies some formatting on BAM files before dependency can be
+further analyzed. It takes as input the path to a folder with all the reads
+of one condition inside, and consider each BAM file to be one replicate. It
+offers to remove:
 \itemize{
-\item reads longer than a provided length
 \item reads not mapping any maturation sites
-\item reads mapping outside of a given range
 \item reads mapping multiple locations
+\item reads longer than a provided length
+\item reads mapping outside of a given range
 }
 }
 \examples{
 
-loadReads(1, 1)
-loadReads(10, 1)
+WT_reads <- loadReads(path_to_BAM, path_to_maturation_sites, max_length=2^13,
+                      genome_range=c(1, 200000), remove_duplicates=TRUE,
+                      verbose=1)
 
 }
