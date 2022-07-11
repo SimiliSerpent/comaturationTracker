@@ -22,4 +22,5 @@ Imports:
     GenomicRanges,
     IRanges,
     methods,
-    Rsamtools
+    Rsamtools,
+    rtracklayer

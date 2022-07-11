@@ -6,10 +6,11 @@
 \usage{
 loadReads(
   path_to_BAM,
-  path_to_maturation_sites,
-  max_length,
-  genome_range,
-  remove_duplicates = FALSE,
+  path_to_maturation_sites = NULL,
+  seqname = NULL,
+  max_length = NULL,
+  genome_range = NULL,
+  remove_duplicates = TRUE,
   verbose = 0
 )
 }
@@ -18,17 +19,19 @@ loadReads(
 all the replicates in the same folder (along with the corresponding .bai
 files).}
 
-\item{path_to_maturation_sites}{\code{String} containing the path to the folder
-with all maturation sites files, \emph{e.g.} in gff file format.}
+\item{path_to_maturation_sites}{Optionnal \code{String} containing the path to
+the folder with all maturation sites files, \emph{e.g.} in gff file format.}
 
-\item{max_length}{\code{Integer} indicating the maximal authorized length for a
-read. If specified, reads longer than this value will be removed.}
+\item{seqname}{\code{String} containing the name of the chromosome of interest.}
+
+\item{max_length}{Optionnal \code{Integer} indicating the maximal authorized
+length for a read. If specified, strictly longer reads will be removed.}
 
 \item{genome_range}{Optionnal \code{Numeric} vector of length 2. If specified,
 reads mapping outside this region will be removed.}
 
 \item{remove_duplicates}{\code{Logical} indicating whether or not reads mapping
-multiple locations will be removed. Default to \code{FALSE}.}
+multiple locations will be removed. Default to \code{TRUE}.}
 
 \item{verbose}{\code{Integer} indicating the level of wordiness:
 \itemize{
@@ -38,7 +41,7 @@ multiple locations will be removed. Default to \code{FALSE}.}
 }
 \value{
 A list of \code{GRanges} objects with all the reads for one condition
-with one given replicate in one object.
+with one given replicate in one element.
 }
 \description{
 \code{loadReads()} applies some formatting on BAM files before dependency can be
@@ -47,15 +50,28 @@ of one condition inside, and consider each BAM file to be one replicate. It
 offers to remove:
 \itemize{
 \item reads not mapping any maturation sites
-\item reads mapping multiple locations
+\item reads not mapping a given chromosome
 \item reads longer than a provided length
 \item reads mapping outside of a given range
+\item reads mapping multiple locations
 }
 }
 \examples{
 
-WT_reads <- loadReads(path_to_BAM, path_to_maturation_sites, max_length=2^13,
-                      genome_range=c(1, 200000), remove_duplicates=TRUE,
-                      verbose=1)
+path_to_BAM              <- system.file("extdata",
+                                        "bam_files",
+                                        package = "comaturationTracker")
+
+path_to_maturation_sites <- system.file("extdata",
+                                        "sites_files",
+                                        package = "comaturationTracker")
+
+WT_reads                 <- loadReads(path_to_BAM,
+                                      path_to_maturation_sites,
+                                      seqname="Pt",
+                                      max_length=2^13,
+                                      genome_range=c(1, 200000),
+                                      remove_duplicates=TRUE,
+                                      verbose=1)
 
 }
