@@ -20,7 +20,8 @@ all the replicates in the same folder (along with the corresponding .bai
 files).}
 
 \item{path_to_maturation_sites}{Optionnal \code{String} containing the path to
-the folder with all maturation sites files, \emph{e.g.} in gff file format.}
+the folder with all maturation sites files, \emph{e.g.} in gff file format. Type
+must be \code{editing} or \code{intron}.}
 
 \item{seqname}{\code{String} containing the name of the chromosome of interest.}
 

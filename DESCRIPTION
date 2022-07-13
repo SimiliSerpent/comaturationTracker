@@ -23,4 +23,6 @@ Imports:
     IRanges,
     methods,
     Rsamtools,
-    rtracklayer
+    rtracklayer,
+    S4Vectors,
+    stringr

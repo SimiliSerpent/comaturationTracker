@@ -16,7 +16,8 @@
 #' all the replicates in the same folder (along with the corresponding .bai
 #' files).
 #' @param path_to_maturation_sites Optionnal `String` containing the path to
-#' the folder with all maturation sites files, *e.g.* in gff file format.
+#' the folder with all maturation sites files, *e.g.* in gff file format. Type
+#' must be `editing` or `intron`.
 #' @param seqname `String` containing the name of the chromosome of interest.
 #' @param max_length Optionnal `Integer` indicating the maximal authorized
 #' length for a read. If specified, strictly longer reads will be removed.
@@ -85,22 +86,7 @@ loadReads <- function(path_to_BAM,
 
   # Set up maturation sites
   if (!is.null(path_to_maturation_sites)) {
-    mat_files <- list.files(path_to_maturation_sites)
-    if (length(mat_files) > 0) {
-      mat_sites <- c(
-        rtracklayer::import(paste0(path_to_maturation_sites,
-                                   "/",
-                                   mat_files[[1]]))
-      )
-      if (length(mat_files) > 1) {
-        for (file_ind in 2:length(mat_files)) {
-          mat_sites <- c(mat_sites,
-                         rtracklayer::import(paste0(path_to_maturation_sites,
-                                                    "/",
-                                                    mat_files[[file_ind]])))
-        }
-      }
-    }
+    mat_sites <- getMatSites(path_to_maturation_sites)
     GenomeInfoDb::seqlevels(mat_sites) <- seqname
   }
 
@@ -119,7 +105,7 @@ loadReads <- function(path_to_BAM,
     ), "GRanges")
 
     # Remove reads not overlapping the maturation events sites
-    if (!is.null(path_to_maturation_sites) && length(mat_files) > 0) {
+    if (!is.null(path_to_maturation_sites)) {
       reads <- IRanges::subsetByOverlaps(reads, mat_sites)
     }
 
@@ -140,6 +126,33 @@ loadReads <- function(path_to_BAM,
   return(all_reads)
 }
 
+# @brief This functions retrieves the maturation events
+#
+# @param path_to_maturation_sites Optionnal `String` containing the path to
+# the folder with all maturation sites files, *e.g.* in gff file format.
+#
+# @return A GRanges with all the sites.
+getMatSites <- function(path_to_maturation_sites) {
+  mat_files <- list.files(path_to_maturation_sites)
+  if (length(mat_files) > 0) {
+    mat_sites <- rtracklayer::import(paste0(path_to_maturation_sites,
+                                            "/",
+                                            mat_files[[1]]))
+    S4Vectors::mcols(mat_sites)$file_id <- 1
+    S4Vectors::mcols(mat_sites)$site_id <- 1:length(mat_sites)
+    if (length(mat_files) > 1) {
+      for (file_ind in 2:length(mat_files)) {
+        new_mat_sites <- rtracklayer::import(paste0(path_to_maturation_sites,
+                                                    "/",
+                                                    mat_files[[file_ind]]))
+        S4Vectors::mcols(new_mat_sites)$file_id <- file_ind
+        S4Vectors::mcols(new_mat_sites)$site_id <- 1:length(new_mat_sites)
+        mat_sites     <- c(mat_sites, new_mat_sites)
+      }
+    }
+  }
+  return(mat_sites)
+}
 
 
 
