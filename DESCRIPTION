@@ -16,6 +16,8 @@ BugReports: https://github.com/SimiliSerpent/comaturationTracker/issues
 Depends:
     R (>= 3.5.0)
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
@@ -27,4 +29,6 @@ Imports:
     Rsamtools,
     rtracklayer,
     S4Vectors,
-    stringr
+    stringr,
+    utils
+VignetteBuilder: knitr

@@ -7,7 +7,7 @@
 #' * start and end positions
 #' * length
 #'
-#' @inheritParams getMatur
+#' @inheritParams getStates
 #'
 #' @return A `List` of data frames with reads informations.
 #'

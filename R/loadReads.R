@@ -69,7 +69,7 @@ loadReads <- function(path_to_BAM,
   bam_files <- list.files(path_to_BAM,
                           pattern=".bam$")
   if (verbose > 0) {writeLines(
-    paste0(length(bam_files), " replicates found.")
+    paste0(length(bam_files), " replicate(s) found.")
   )}
 
   # Set up ranges and chromosome criteria
@@ -86,6 +86,7 @@ loadReads <- function(path_to_BAM,
 
   # Set up maturation sites
   if (!is.null(path_to_maturation_sites)) {
+    if (verbose > 0) {writeLines("Looking for maturation events files...")}
     mat_sites <- getMatSites(path_to_maturation_sites)
     GenomeInfoDb::seqlevels(mat_sites) <- seqname
   }

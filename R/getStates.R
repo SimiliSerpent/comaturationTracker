@@ -1,7 +1,7 @@
 #' Retrieve the maturation states of a set of reads for a set of maturations
 #'
 #' @description
-#' `getMatur()` takes as input a set of reads (as output by [loadReads()]) and
+#' `getStates()` takes as input a set of reads (as output by [loadReads()]) and
 #' a set of maturation events (e.g. in `gff` format) and returns a data frame
 #' giving the maturation state of each read at all the maturation events sites.
 #'
@@ -26,15 +26,15 @@
 #'                                         "sites_files",
 #'                                         package = "comaturationTracker")
 #'
-#' maturation_states        <- getMatur(all_reads,
+#' maturation_states        <- getStates(all_reads,
 #'                                      path_to_maturation_sites)
 #'
 #' @export
-getMatur <- function(all_reads,
+getStates <- function(all_reads,
                      path_to_maturation_sites) {
 
   # Run through each replicate...
-  matrices_with_all_events <- lapply(all_reads, function(reads) {
+  df_with_all_events <- lapply(all_reads, function(reads) {
 
     # Store reads attributes in a data frame for speed
     df_4_speed <- data.frame(
@@ -88,7 +88,7 @@ getMatur <- function(all_reads,
     }))
   })
 
-  return(matrices_with_all_events)
+  return(df_with_all_events)
 }
 
 # @brief This functions builds a list with type and positions of all genome-

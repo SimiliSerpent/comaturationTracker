@@ -1,0 +1,109 @@
+---
+title: "comaturationTracker"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{comaturationTracker}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette explains how comaturationTracker can help find dependency between
+different RNA maturation events. After a short reminder of the problem and how
+we intend to solve it with this package, we give a basic illustration of *how to use the package*, before we explore more specific tools developed here. We end
+this vignette with a *what still needs to be added* section.
+
+# RNA co-maturations: the big picture
+
+# How to find dependencies - basic workflow
+
+## Install the package
+
+Package is available on the dedicated [github repositery](https://github.com/SimiliSerpent/comaturationTracker). It is in
+source state and can be installed via `devtools::install_github("SimiliSerpent/comaturationTracker")`. Then, the
+package can be attached and loaded using:
+
+```{r setup}
+library(comaturationTracker)
+```
+
+Please contact vacusb\@gmail.com if you encounter any issue when installing or
+building the package.
+
+## Format input data
+
+`comaturationTracker` mainly takes as input RNA-seq reads and lists of
+maturation event sites. Of course it expects several replicates of the same
+RNA-seq experiment, as well as a predefined formatting.
+
+In this basic case, we only consider analysis of dependencies within a single
+bio-technical condition. Reads can be provided as .bam files. Place all .bam
+files corresponding to all the replicates in the same folder. Maturation events
+sites can probably be provided in a few different form, although only the .gff
+file format has been tested so far - thus, only this one is recommended. Place
+all maturation sites files in another folder.
+
+While formatting the files and folders pay attention to the `RNAME` attribute of
+the .bam files and the `seqid` attribute of the maturation sites files. Indeed,
+they have to be identical for the read to map the site, having overlapping
+positions is not enough.
+
+Eventually, be careful with the `type` attribute of the maturation events sites
+files. Only `editing` and `intron` are accepted so far.
+
+## Load the data
+
+Now that the data have the appropriate formatting, load them in your R session.
+To do that, you can use our `loadReads()` function which allows some additional
+filtering of the input reads:
+
+- restrict reads to those mapping a given list of maturation events sites
+- restrict reads to those shorter than a specified length
+- restrict reads to those mapping a specified chromosomal region
+- restrict reads to those mapping only one location of the genome
+
+```{r, include = FALSE}
+path_to_BAM              <- system.file("extdata",
+                                        "bam_files",
+                                        package = "comaturationTracker")
+
+path_to_maturation_sites <- system.file("extdata",
+                                        "sites_files",
+                                        package = "comaturationTracker")
+```
+
+```{r}
+WT_reads                 <- loadReads(path_to_BAM,
+                                      path_to_maturation_sites,
+                                      seqname="Pt",
+                                      max_length=2^13,
+                                      genome_range=c(1, 200000),
+                                      remove_duplicates=TRUE,
+                                      verbose=1)
+```
+
+In the subsequent example, the paths should point to the folders defined
+earlier.
+
+## Build the count data frame
+
+The loaded data need to be shaped the right way before you feed them to DESeq2 -
+*i.e.* the statistical analysis part of the pipeline. We provide you with two functions to achieve this goal: `getStates()` and `buildCountsDF()`.
+
+The first one retrieves the maturation of each read given the loaded reads and a folder containing annotations of maturation events sites. Since it has a relatively long runtime, we only apply it on a simple example here (notice how
+the previous execution found only one replicate). To give a more realistic idea,
+it takes about 22 minutes on our own dataset.
+
+```{r}
+maturation_states <- getStates(WT_reads,
+                               path_to_maturation_sites)
+```
+
