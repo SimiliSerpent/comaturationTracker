@@ -18,17 +18,69 @@ knitr::opts_chunk$set(
 
 This vignette explains how comaturationTracker can help find dependency between
 different RNA maturation events. After a short reminder of the problem and how
-we intend to solve it with this package, we give a basic illustration of *how to use the package*, before we explore more specific tools developed here. We end
-this vignette with a *what still needs to be added* section.
+we intend to solve it with this package, we give a basic illustration of *how
+to use the package*, before we explore more specific tools developed here. We
+end this vignette with a *further work* section, giving directions for what
+still needs to be added to the package.
 
 # RNA co-maturations: the big picture
+
+## Quick biological background
+
+RNAs sometimes undergo maturations between their transcription and their
+traduction, as it is the case in the chloroplast of *Arabidopsis thaliana*.
+When a maturation site has an established location on the transcriptome,
+we can test the maturation state of any read mapping this position, starting
+with the files output by the transcriptome sequencing and the annotation of the
+maturation site.
+
+By looking at the maturation state of reads on two neighboring sites, we can
+evaluate the dependency betweenn the maturation on both sites: *i.e.*, does the
+maturation of one of the sites *depends* on the maturation state of the other
+one? This package is dedicated to answering this question. The statistical
+pipeline is detailed in the next section.
+
+Because this package is issued from a work on the chloroplast of *A. thaliana*,
+and because it is a *work in progress*, we only consider two types of
+maturation yet:
+
+- C to U editing
+- introns splicing
+
+The event that is the most likely to be added next is the processing of the
+reads extremities.
+
+## How do we test dependency
+
+To accurately model RNA-seq counts data, we take advantage of the `DESeq2`
+package. If you are not familiar with this statistical analysis tool, we
+recommend you have a look at the `DESeq2` [vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html).
+
+But it is not necessary. You can also follow the workflow below and it will
+work fine.
+
+The analysis can be broken down into three distinct parts:
+
+- For each pair of maturation events sites, enumerate the number of reads
+mapping both sites, in the four possible maturation states (matured/matured,
+matured/unmatured, unmatured/matured, unmatured/unmatured).
+- Use `DESeq2` to model those counts with a Negative Binomial law - and take
+advantage of this package to estimate the dispersion parameter, along with the
+mean using a Generalized Linear Model and a logarithmic link.
+- Again, use `DESeq2` to test the GLM coefficient measuring the dependency of
+maturation between the two sites.
+
+Our work mainly consists in turning the raw files into `DESeq2` comprehensive
+data, and in showing the user how to plug this into `DESeq2`.
 
 # How to find dependencies - basic workflow
 
 ## Install the package
 
-Package is available on the dedicated [github repositery](https://github.com/SimiliSerpent/comaturationTracker). It is in
-source state and can be installed via `devtools::install_github("SimiliSerpent/comaturationTracker")`. Then, the
+Package is available on the dedicated
+[github repositery](https://github.com/SimiliSerpent/comaturationTracker). It
+is in source state and can be installed via
+`devtools::install_github("SimiliSerpent/comaturationTracker")`. Then, the
 package can be attached and loaded using:
 
 ```{r setup}
@@ -90,15 +142,18 @@ WT_reads                 <- loadReads(path_to_BAM,
                                       verbose=1)
 ```
 
-In the subsequent example, the paths should point to the folders defined
+In the above example, the paths should point to the folders defined
 earlier.
 
-## Build the count data frame
+## Build the counts data frame
 
-The loaded data need to be shaped the right way before you feed them to DESeq2 -
-*i.e.* the statistical analysis part of the pipeline. We provide you with two functions to achieve this goal: `getStates()` and `buildCountsDF()`.
+The loaded data need to be shaped the right way before you feed them to `DESeq2`
+- *i.e.* the statistical analysis part of the pipeline. We provide you with two
+functions to achieve this goal: `getStates()` and `buildCountsDF()`.
 
-The first one retrieves the maturation of each read given the loaded reads and a folder containing annotations of maturation events sites. Since it has a relatively long runtime, we only apply it on a simple example here (notice how
+The first one retrieves the maturation of each read given the loaded reads and
+a folder containing annotations of maturation events sites. Since it has a
+relatively long runtime, we only apply it on a simple example here (notice how
 the previous execution found only one replicate). To give a more realistic idea,
 it takes about 22 minutes on our own dataset.
 
@@ -106,4 +161,139 @@ it takes about 22 minutes on our own dataset.
 maturation_states <- getStates(WT_reads,
                                path_to_maturation_sites)
 ```
+
+The second one converts those maturation states into a data frame of counts and
+a data frame of conditions (experimental design) that can be read by `DESeq2`.
+
+```{r}
+buildCountsDF_output <- buildCountsDF(maturation_states)
+counts               <- buildCountsDF_output[[1]]
+conditions           <- buildCountsDF_output[[2]]
+
+counts[1334,]
+
+print(conditions)
+```
+
+A and B denote the two events of the pair. Capital letter denotes a matured
+site, while small letter denotes an un-matured site. Digits in columns or rows
+names denote the number of the replicate.
+
+To give a better view on what it looks like with real data, we load another
+`buildCountsDF()` output.
+
+```{r, include = FALSE}
+path_to_counts       <- system.file("extdata",
+                                    "buildCountsDF_output_ex.rds",
+                                    package = "comaturationTracker")
+
+buildCountsDF_output <- readRDS(path_to_counts)
+counts               <- buildCountsDF_output[[1]]
+conditions           <- buildCountsDF_output[[2]]
+```
+
+```{r}
+counts[68,]
+
+print(conditions)
+```
+
+## Filter the counts data frame
+
+Just like more classical differential gene expression analysis, most lines in
+counts data frame display 0 counts (or very few). In our case, the main reason
+for this is that out of all the pairs of events, very few are close enough to
+be covered by un-abnormal reads. Just like in the classical use of DESeq2, we
+thus need to filter out rows with too few counts.
+
+To make it clearer, we display here two plots showing how many pairs of events
+remain in the data frame after we filter on the sum (*plot on the left*) or on
+the mean (*plot on the right*).
+
+```{r, echo=FALSE, fig.width=7, fig.height=4, fig.fullwidth=TRUE}
+l1 <- lapply(seq(1, 120, 4), FUN=function(i) {
+  nrow(counts[rowSums(counts) >= i,])
+})
+
+l2 <- lapply(seq(1, 120, 4), FUN=function(i) {
+  nrow(counts[rowMeans(counts) >= i,])
+})
+
+par(mfrow = c(1, 2))
+plot(seq(1, 120, 4),
+     l1,
+     xlab="filter value",
+     ylab="pairs left")
+plot(seq(1, 120, 4),
+     l2,
+     xlab="filter value",
+     ylab="pairs left")
+par(mfrow = c(1, 1))
+```
+
+Chosing the right filter is an essential aspect of the fine-tuning of an
+analysis. We go on with a naive filter, requesting each row to have a sum of at
+least 5.
+
+```{r}
+counts <- counts[rowSums(counts) > 5,]
+```
+
+## Run `DESeq2`
+
+We convert the data frame into a matrix, and it is ready to be pluged in the
+`DESeq2` package. We take care to cancel the `DESeq2` normalization step.
+
+```{r, fig.width=7, fig.height=4, fig.fullwidth=TRUE}
+# Convert data into a matrix
+counts <- as.matrix(counts)
+
+# Compute mock normalization matrix
+normFactors  <- matrix(data = 1,
+                       nrow = nrow(counts),
+                       ncol = ncol(counts))
+
+# Build DESeqDAtaSet object and remove normalization
+dds <- DESeq2::DESeqDataSetFromMatrix(counts,
+                                      colData = conditions,
+                                      design = ~ A + B + R1 + R2 + A:B)
+DESeq2::normalizationFactors(dds) <- normFactors
+
+# Run DESeq
+dds <- DESeq2::DESeq(dds)
+res <- DESeq2::results(dds)
+
+# Check analysis quality though disperion plot and p-values histogram
+par(mfrow = c(1, 2))
+DESeq2::plotDispEsts(dds)
+hist(res$pvalue,
+     col="blue")
+```
+
+# Other tools offered by comaturationTracker
+
+TODO
+
+# Further work
+
+TODO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

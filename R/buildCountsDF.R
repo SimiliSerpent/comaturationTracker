@@ -20,11 +20,11 @@
 #'
 #' @examples
 #'
-#' path_to_all_df       <- system.file("extdata",
-#'                                     "getStates_output_ex.rds",
-#'                                     package = "comaturationTracker")
-#'
-#' df_with_all_events   <- readRDS(path_to_all_df)
+# path_to_all_df       <- system.file("extdata",
+#                                     "getStates_output_ex.rds",
+#                                     package = "comaturationTracker")
+#
+# df_with_all_events   <- readRDS(path_to_all_df)
 #'
 #' buildCountsDF_output <- buildCountsDF(df_with_all_events)
 #' counts               <- buildCountsDF_output[[1]]
