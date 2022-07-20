@@ -1,0 +1,265 @@
+# -----------------------------------------------------------
+# CITATION file created with {cffr} R package, v0.2.2
+# See also: https://docs.ropensci.org/cffr/
+# -----------------------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "comaturationTracker" in publications use:'
+type: software
+license: MIT
+title: 'comaturationTracker: Using Contrast to Study RNA Transcripts CoMaturations'
+version: 0.0.0.9000
+abstract: A pipeline to assess dependency between RNAs maturation events. It uses
+  R package 'DESeq2' to accurately model transcriptomics data. It is a work in progress.
+authors:
+- family-names: Vacus
+  given-names: Benjamin
+  email: vacusb@gmail.com
+  orcid: https://orcid.org/0000-0001-7420-4821
+preferred-citation:
+  type: manual
+  title: 'comaturationTracker: Using Contrast to Study RNA Transcripts CoMaturations'
+  authors:
+  - family-names: Vacus
+    given-names: Benjamin
+    email: vacusb@gmail.com
+    orcid: https://orcid.org/0000-0001-7420-4821
+  version: 0.0.0.9000
+  abstract: A pipeline to assess dependency between RNAs maturation events. It uses
+    R package 'DESeq2' to accurately model transcriptomics data. It is a work in progress.
+  repository-code: https://github.com/SimiliSerpent/comaturationTracker
+  url: https://github.com/SimiliSerpent/comaturationTracker
+  contact:
+  - family-names: Vacus
+    given-names: Benjamin
+    email: vacusb@gmail.com
+    orcid: https://orcid.org/0000-0001-7420-4821
+  license: MIT
+  year: '2022'
+repository-code: https://github.com/SimiliSerpent/comaturationTracker
+url: https://github.com/SimiliSerpent/comaturationTracker
+contact:
+- family-names: Vacus
+  given-names: Benjamin
+  email: vacusb@gmail.com
+  orcid: https://orcid.org/0000-0001-7420-4821
+references:
+- type: software
+  title: 'R: A Language and Environment for Statistical Computing'
+  notes: Depends
+  authors:
+  - name: R Core Team
+  location:
+    name: Vienna, Austria
+  year: '2022'
+  url: https://www.R-project.org/
+  institution:
+    name: R Foundation for Statistical Computing
+  version: '>= 3.5.0'
+- type: software
+  title: knitr
+  abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
+  notes: Suggests
+  authors:
+  - family-names: Xie
+    given-names: Yihui
+    email: xie@yihui.name
+    orcid: https://orcid.org/0000-0003-0645-5666
+  year: '2022'
+  url: https://CRAN.R-project.org/package=knitr
+- type: software
+  title: rmarkdown
+  abstract: 'rmarkdown: Dynamic Documents for R'
+  notes: Suggests
+  authors:
+  - family-names: Allaire
+    given-names: JJ
+    email: jj@rstudio.com
+  - family-names: Xie
+    given-names: Yihui
+    email: xie@yihui.name
+    orcid: https://orcid.org/0000-0003-0645-5666
+  - family-names: McPherson
+    given-names: Jonathan
+    email: jonathan@rstudio.com
+  - family-names: Luraschi
+    given-names: Javier
+    email: javier@rstudio.com
+  - family-names: Ushey
+    given-names: Kevin
+    email: kevin@rstudio.com
+  - family-names: Atkins
+    given-names: Aron
+    email: aron@rstudio.com
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  - family-names: Cheng
+    given-names: Joe
+    email: joe@rstudio.com
+  - family-names: Chang
+    given-names: Winston
+    email: winston@rstudio.com
+  - family-names: Iannone
+    given-names: Richard
+    email: rich@rstudio.com
+    orcid: https://orcid.org/0000-0003-3925-190X
+  year: '2022'
+  url: https://CRAN.R-project.org/package=rmarkdown
+- type: software
+  title: DESeq2
+  abstract: 'DESeq2: Differential gene expression analysis based on the negative binomial
+    distribution'
+  notes: Suggests
+  authors:
+  - family-names: Love
+    given-names: Michael
+    email: michaelisaiahlove@gmail.com
+  - family-names: Anders
+    given-names: Simon
+  - family-names: Huber
+    given-names: Wolfgang
+  year: '2022'
+  url: https://github.com/mikelove/DESeq2
+- type: software
+  title: testthat
+  abstract: 'testthat: Unit Testing for R'
+  notes: Suggests
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  url: https://CRAN.R-project.org/package=testthat
+  version: '>= 3.0.0'
+- type: software
+  title: GenomeInfoDb
+  abstract: 'GenomeInfoDb: Utilities for manipulating chromosome names, including
+    modifying them to follow a particular naming style'
+  notes: Imports
+  authors:
+  - family-names: Arora
+    given-names: Sonali
+  - family-names: Morgan
+    given-names: Martin
+  - family-names: Carlson
+    given-names: Marc
+  - family-names: Pagès
+    given-names: H.
+  year: '2022'
+  url: https://bioconductor.org/packages/GenomeInfoDb
+- type: software
+  title: GenomicAlignments
+  abstract: 'GenomicAlignments: Representation and manipulation of short genomic alignments'
+  notes: Imports
+  authors:
+  - family-names: Pagès
+    given-names: Hervé
+  - family-names: Obenchain
+    given-names: Valerie
+  - family-names: Morgan
+    given-names: Martin
+  year: '2022'
+  url: https://bioconductor.org/packages/GenomicAlignments
+- type: software
+  title: GenomicRanges
+  abstract: 'GenomicRanges: Representation and manipulation of genomic intervals'
+  notes: Imports
+  authors:
+  - family-names: Aboyoun
+    given-names: P.
+  - family-names: Pagès
+    given-names: H.
+  - family-names: Lawrence
+    given-names: M.
+  year: '2022'
+  url: https://bioconductor.org/packages/GenomicRanges
+- type: software
+  title: IRanges
+  abstract: 'IRanges: Foundation of integer range manipulation in Bioconductor'
+  notes: Imports
+  authors:
+  - family-names: Pagès
+    given-names: H.
+  - family-names: Aboyoun
+    given-names: P.
+  - family-names: Lawrence
+    given-names: M.
+  year: '2022'
+  url: https://bioconductor.org/packages/IRanges
+- type: software
+  title: methods
+  abstract: 'R: A Language and Environment for Statistical Computing'
+  notes: Imports
+  authors:
+  - name: R Core Team
+  location:
+    name: Vienna, Austria
+  year: '2022'
+  url: https://www.R-project.org/
+  institution:
+    name: R Foundation for Statistical Computing
+- type: software
+  title: Rsamtools
+  abstract: 'Rsamtools: Binary alignment (BAM), FASTA, variant call (BCF), and tabix
+    file import'
+  notes: Imports
+  authors:
+  - family-names: Morgan
+    given-names: Martin
+  - family-names: Pagès
+    given-names: Hervé
+  - family-names: Obenchain
+    given-names: Valerie
+  - family-names: Hayden
+    given-names: Nathaniel
+  year: '2022'
+  url: https://bioconductor.org/packages/Rsamtools
+- type: software
+  title: rtracklayer
+  abstract: 'rtracklayer: R interface to genome annotation files and the UCSC genome
+    browser'
+  notes: Imports
+  authors:
+  - family-names: Lawrence
+    given-names: Michael
+  - family-names: Carey
+    given-names: Vince
+  - family-names: Gentleman
+    given-names: Robert
+  year: '2022'
+- type: software
+  title: S4Vectors
+  abstract: 'S4Vectors: Foundation of vector-like and list-like containers in Bioconductor'
+  notes: Imports
+  authors:
+  - family-names: Pagès
+    given-names: H.
+  - family-names: Lawrence
+    given-names: M.
+  - family-names: Aboyoun
+    given-names: P.
+  year: '2022'
+  url: https://bioconductor.org/packages/S4Vectors
+- type: software
+  title: stringr
+  abstract: 'stringr: Simple, Consistent Wrappers for Common String Operations'
+  notes: Imports
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  url: https://CRAN.R-project.org/package=stringr
+- type: software
+  title: utils
+  abstract: 'R: A Language and Environment for Statistical Computing'
+  notes: Imports
+  authors:
+  - name: R Core Team
+  location:
+    name: Vienna, Austria
+  year: '2022'
+  url: https://www.R-project.org/
+  institution:
+    name: R Foundation for Statistical Computing
