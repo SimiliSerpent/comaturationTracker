@@ -25,7 +25,8 @@ given maturation state for all pair of sites.
 }
 \description{
 \code{buildCountsDF()} takes as input a data frame with informations about reads
-maturation state at each site (as output by \code{\link[=getStates]{getStates()}}) and returns a data
+maturation state at each site (as output by
+\code{\link[=getStates]{getStates()}}) and returns a data
 frame ready to be fed to DESeq2 to obtain comaturations.
 
 One row in the output data frame corresponds to a pair of maturation events.
@@ -35,11 +36,6 @@ maturation state at each site and a replicate.
 }
 \examples{
 
-path_to_all_df       <- system.file("extdata",
-                                    "getStates_output_ex.rds",
-                                    package = "comaturationTracker")
-
-df_with_all_events   <- readRDS(path_to_all_df)
 
 buildCountsDF_output <- buildCountsDF(df_with_all_events)
 counts               <- buildCountsDF_output[[1]]
